@@ -1,10 +1,10 @@
-package com.ivy.service.store.impl;
+package com.ivy.service.system.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ivy.dao.store.CompanyDao;
-import com.ivy.domain.store.Company;
-import com.ivy.service.store.CompanyService;
+import com.ivy.dao.system.DeptDao;
+import com.ivy.domain.system.Dept;
+import com.ivy.service.system.DeptService;
 import com.ivy.utils.MapperFactory;
 import com.ivy.utils.TransactionUtil;
 import org.apache.ibatis.session.SqlSession;
@@ -13,24 +13,24 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * CompanyServiceImpl
+ * DeptServiceImpl
  *
  * @Author: ivy
- * @CreateTime: 2021-06-25
+ * @CreateTime: 2021-06-27
  */
-public class CompanyServiceImpl implements CompanyService {
-    public void save(Company company) {
+public class DeptServiceImpl implements DeptService {
+    public void save(Dept dept) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            CompanyDao companyDao = MapperFactory.getMapper(sqlSession, CompanyDao.class);
+            DeptDao deptDao = MapperFactory.getMapper(sqlSession, DeptDao.class);
             //id使用UUID的生成策略
             String id = UUID.randomUUID().toString();
-            company.setId(id);
+            dept.setId(id);
             //3、调用Dao层操作
-            int result = companyDao.save(company);
+            int result = deptDao.save(dept);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -46,15 +46,15 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
-    public void delete(Company company) {
+    public void delete(Dept dept) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            CompanyDao companyDao = MapperFactory.getMapper(sqlSession, CompanyDao.class);
+            DeptDao deptDao = MapperFactory.getMapper(sqlSession, DeptDao.class);
             //3、调用Dao层操作
-            int result = companyDao.delete(company);
+            int result = deptDao.delete(dept);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -70,15 +70,15 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
-    public void update(Company company) {
+    public void update(Dept dept) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            CompanyDao companyDao = MapperFactory.getMapper(sqlSession, CompanyDao.class);
+            DeptDao deptDao = MapperFactory.getMapper(sqlSession, DeptDao.class);
             //3、调用Dao层操作
-            int result = companyDao.update(company);
+            int result = deptDao.update(dept);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -94,15 +94,15 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
-    public Company findById(String id) {
+    public Dept findById(String id) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            CompanyDao companyDao = MapperFactory.getMapper(sqlSession, CompanyDao.class);
+            DeptDao deptDao = MapperFactory.getMapper(sqlSession, DeptDao.class);
             //3、调用Dao层操作
-            return companyDao.findById(id);
+            return deptDao.findById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
             //记录日志
@@ -115,15 +115,15 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
-    public List<Company> findAll() {
+    public List<Dept> findAll() {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            CompanyDao companyDao = MapperFactory.getMapper(sqlSession, CompanyDao.class);
+            DeptDao deptDao = MapperFactory.getMapper(sqlSession, DeptDao.class);
             //3、调用Dao层操作
-            return companyDao.findAll();
+            return deptDao.findAll();
         } catch (Exception e) {
             throw new RuntimeException(e);
             //记录日志
@@ -142,10 +142,10 @@ public class CompanyServiceImpl implements CompanyService {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            CompanyDao companyDao = MapperFactory.getMapper(sqlSession, CompanyDao.class);
+            DeptDao deptDao = MapperFactory.getMapper(sqlSession, DeptDao.class);
             //3、调用Dao层操作
             PageHelper.startPage(page, size);
-            List<Company> all = companyDao.findAll();
+            List<Dept> all = deptDao.findAll();
             PageInfo pageInfo = new PageInfo(all);
             return pageInfo;
         } catch (Exception e) {

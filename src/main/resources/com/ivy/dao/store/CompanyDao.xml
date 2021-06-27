@@ -3,7 +3,7 @@
 <mapper namespace="com.ivy.dao.store.CompanyDao">
 
     <!--配置实体类属性和数据库表中列的对应关系-->
-    <resultMap id="BaseResultMap" type="com.ivy.domain.store.Company">
+    <resultMap id="BaseResultMap" type="company">
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
         <result column="expiration_date" jdbcType="TIMESTAMP" property="expirationDate"/>
@@ -45,7 +45,7 @@
     </delete>
 
     <!--配置全字段插入-->
-    <insert id="save" parameterType="com.ivy.domain.store.Company">
+    <insert id="save" parameterType="company">
         insert into st_company (id, name, expiration_date,
         address, license_id, representative,
         phone, company_size, industry,

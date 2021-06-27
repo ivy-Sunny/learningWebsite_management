@@ -1,33 +1,33 @@
-package com.ivy.service.store;
+package com.ivy.service.system;
 
 import com.github.pagehelper.PageInfo;
-import com.ivy.domain.store.Company;
+import com.ivy.domain.system.Dept;
 
 import java.util.List;
 
-public interface CompanyService {
+public interface DeptService {
     /**
      * 添加
      */
-    void save(Company company);
+    void save(Dept dept);
     /**
      * 删除
      */
-    void delete(Company company);
+    void delete(Dept dept);
 
     /**
      * 修改
      */
-    void update(Company company);
+    void update(Dept dept);
 
     /**
      * 查询单个
      */
-    Company findById(String id);
+    Dept findById(String id);
     /**
      * 查询全部
      */
-    List<Company> findAll();
+    List<Dept> findAll();
 
     /**
      * 分页查询
@@ -35,5 +35,5 @@ public interface CompanyService {
      * @param size 每页数据量
      * @return
      */
-    PageInfo findAll(int page,int size);
+    PageInfo findAll(int page, int size);
 }
