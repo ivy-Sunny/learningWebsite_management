@@ -13,9 +13,11 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -53,10 +55,13 @@ public class QuestionServlet extends BaseServlet {
             }
         } else if ("delete".equals(operation)) {
             this.delete(req, resp);
-        } else if("toExamine".equals(operation)){
+        } else if ("toExamine".equals(operation)) {
             this.toExamine(req, resp);
+        } else if ("downloadReport".equals(operation)) {
+            this.downloadReport(req, resp);
         }
     }
+
 
     private List<Company> getCompanyList() {
         return companyService.findAll();
@@ -65,11 +70,13 @@ public class QuestionServlet extends BaseServlet {
     private List<Catalog> getCatalogList() {
         return catalogService.findAll();
     }
+
     private void toExamine(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         Question question = BeanUtil.fillBean(req, Question.class);
         questionService.examine(question);
         resp.sendRedirect(req.getContextPath() + "/store/question?operation=list");
     }
+
     private void toEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //查询要修改的数据
         String id = req.getParameter("id");
@@ -188,5 +195,20 @@ public class QuestionServlet extends BaseServlet {
             //跳转页面
             resp.sendRedirect(req.getContextPath() + "/store/question?operation=list");
         }
+    }
+    private void downloadReport(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //返回的数据类型为文件xlsx类型
+        resp.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        String fileName = new String( (String.valueOf(System.currentTimeMillis()) + ".xlsx").getBytes(), "iso8859-1");
+        resp.addHeader("Content-Disposition", "attachment;fileName=" + fileName);
+        //生成报告的文件，然后传递到前端页面
+        ByteArrayOutputStream os = questionService.getReport();
+        //获取产生响应的流对象
+        ServletOutputStream sos = resp.getOutputStream();
+        //将数据从原始的字节流对象中提取出来写入到servlet对应的输出流中
+        os.writeTo(sos);
+        //将输出流刷新
+        sos.flush();
+        os.close();
     }
 }

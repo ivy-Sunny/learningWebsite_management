@@ -3,6 +3,8 @@ package com.ivy.service.store;
 import com.github.pagehelper.PageInfo;
 import com.ivy.domain.store.Question;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public interface QuestionService {
@@ -42,4 +44,9 @@ public interface QuestionService {
      * @return
      */
     PageInfo findAll(int page, int size);
+
+    /**
+     * 报表
+     */
+    ByteArrayOutputStream getReport() throws IOException;
 }
