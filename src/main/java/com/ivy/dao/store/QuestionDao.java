@@ -11,6 +11,8 @@ public interface QuestionDao {
 
     int update(Question question);
 
+    int examine(Question question);
+
     Question findById(String id);
 
     List<Question> findAll();

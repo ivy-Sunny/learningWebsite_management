@@ -28,7 +28,7 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <form id="editForm" action="${ctx}/store/question?operation=edit" method="post">
+                    <form id="editForm" action="${ctx}/store/question?operation=edit" method="post"  enctype="multipart/form-data">
 
                         <input type="hidden" name="id" value="${question.id}">
 
@@ -76,9 +76,9 @@
                                 </div>
 
                                 <c:if test="${question.picture.length() > 0}">
-                                    <div class="col-md-2 title">题干图片</div>
-                                    <div class="col-md-10 data ">
-                                        <img src="${ctx}/upload/${question.picture}"/>
+                                    <div class="col-md-2 title" style="height: 150px;line-height: 150px">题干图片</div>
+                                    <div class="col-md-10 data " style="height: 150px">
+                                        <img style="height: 100%" src="${ctx}/upload/${question.picture}"/>
                                     </div>
                                 </c:if>
 

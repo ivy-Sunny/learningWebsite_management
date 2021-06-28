@@ -80,9 +80,9 @@
                                         onclick='location.href="${ctx}/store/question?operation=toTestUpload"'><i
                                         class="fa fa-file-o"></i> 测试文件上传
                                 </button>
-                            <%--
-                                                            <button type="button" class="btn btn-default" title="上传题目" onclick='location.href="${ctx}/store/question?operation=toImport"'><i class="fa fa-adn"></i> 上传题目</button>
-                                --%>
+                                <%--
+                                                                <button type="button" class="btn btn-default" title="上传题目" onclick='location.href="${ctx}/store/question?operation=toImport"'><i class="fa fa-adn"></i> 上传题目</button>
+                                    --%>
                                 <button type="button" class="btn btn-default" title="导出题目"
                                         onclick=location.href="${ctx}/store/question?operation=downloadReport"><i
                                         class="fa fa-download"></i>导出题目
@@ -151,10 +151,16 @@
                                             onclick='location.href="${ctx}/store/question?operation=toEdit&id=${o.id}"'>
                                         编辑
                                     </button>
-                                    <button type="button" class="btn bg-olive btn-xs" onclick='toExamine("${o.id}")'>审核
-                                    </button>
+                                    <c:choose>
+                                        <c:when test="${o.reviewStatus eq '0'}">
+                                            <button type="button" class="btn bg-olive btn-xs"
+                                                    onclick='toExamine("${o.id}")'>审核
+                                            </button>
+                                        </c:when>
+                                    </c:choose>
+
                                     <button type="button" class="btn bg-olive btn-xs"
-                                            onclick='location.href="${ctx}/store/questionItem?operation=list2&questionId=${o.id}"'>
+                                            onclick='location.href="${ctx}/store/questionItem?operation=list&questionId=${o.id}"'>
                                         配置选项
                                     </button>
                                 </th>

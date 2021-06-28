@@ -1,13 +1,7 @@
 package com.ivy.web.controller;
 
-import com.ivy.service.store.CatalogService;
-import com.ivy.service.store.CompanyService;
-import com.ivy.service.store.CourseService;
-import com.ivy.service.store.QuestionService;
-import com.ivy.service.store.impl.CatalogServiceImpl;
-import com.ivy.service.store.impl.CompanyServiceImpl;
-import com.ivy.service.store.impl.CourseServiceImpl;
-import com.ivy.service.store.impl.QuestionServiceImpl;
+import com.ivy.service.store.*;
+import com.ivy.service.store.impl.*;
 import com.ivy.service.system.DeptService;
 import com.ivy.service.system.UserService;
 import com.ivy.service.system.impl.DeptServiceImpl;
@@ -29,6 +23,7 @@ public class BaseServlet extends HttpServlet {
     protected CourseService courseService;
     protected CatalogService catalogService;
     protected QuestionService questionService;
+    protected QuestionItemService questionItemService;
     @Override
     public void init() throws ServletException {
         companyService = new CompanyServiceImpl();
@@ -37,5 +32,6 @@ public class BaseServlet extends HttpServlet {
         courseService = new CourseServiceImpl();
         catalogService = new CatalogServiceImpl();
         questionService = new QuestionServiceImpl();
+        questionItemService = new QuestionItemServiceImpl();
     }
 }

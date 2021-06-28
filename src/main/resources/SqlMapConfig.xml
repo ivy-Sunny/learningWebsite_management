@@ -9,7 +9,6 @@
         <!--指定实体类所在的包，此时包下所有类都会注册别名，别名就是类名称-->
         <package name="com.ivy.domain"></package>
     </typeAliases>
-
     <!--配置分页插件，plugins标签有出现顺序要求，必须在environments之前，同时要在properties和typeAliases之后 -->
     <plugins>
         <!-- com.github.pagehelper.PageInterceptor -->

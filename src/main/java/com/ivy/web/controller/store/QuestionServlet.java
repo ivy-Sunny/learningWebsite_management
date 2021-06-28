@@ -46,9 +46,15 @@ public class QuestionServlet extends BaseServlet {
         } else if ("toEdit".equals(operation)) {
             this.toEdit(req, resp);
         } else if ("edit".equals(operation)) {
-            this.edit(req, resp);
+            try {
+                this.edit(req, resp);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if ("delete".equals(operation)) {
             this.delete(req, resp);
+        } else if("toExamine".equals(operation)){
+            this.toExamine(req, resp);
         }
     }
 
@@ -59,7 +65,11 @@ public class QuestionServlet extends BaseServlet {
     private List<Catalog> getCatalogList() {
         return catalogService.findAll();
     }
-
+    private void toExamine(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        Question question = BeanUtil.fillBean(req, Question.class);
+        questionService.examine(question);
+        resp.sendRedirect(req.getContextPath() + "/store/question?operation=list");
+    }
     private void toEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //查询要修改的数据
         String id = req.getParameter("id");
@@ -72,13 +82,38 @@ public class QuestionServlet extends BaseServlet {
         req.getRequestDispatcher("/WEB-INF/pages/store/question/update.jsp").forward(req, resp);
     }
 
-    private void edit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        //将数据获取到，封装成一个对象
-        Question question = BeanUtil.fillBean(req, Question.class, "yyyy-MM-dd");
-        //调用业务层接口save
-        questionService.update(question);
-        //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/store/question?operation=list");
+    private void edit(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        //1、确认该操作是否支持文件上传操作，enctype="multipart/form-data"
+        if (ServletFileUpload.isMultipartContent(req)) {
+            //2、创建磁盘工厂对象
+            DiskFileItemFactory diskFileItemFactory = new DiskFileItemFactory();
+            //3、Servlet文件上传的核心对象
+            ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
+            //4、从request中读取数据
+            List<FileItem> fileItems = servletFileUpload.parseRequest(req);
+            //---处理form表单提交过来的普通数据
+            //将数据获取到，封装成一个对象
+            Question question = BeanUtil.fillBean(fileItems, Question.class);
+            //调用业务层接口save
+            boolean flag = false;
+            for (FileItem item : fileItems) {
+                if (StringUtils.isNotBlank(item.getName())) {
+                    flag = true;
+                    break;
+                }
+            }
+            questionService.update(question, flag);
+            //---处理form表单提交过来的文件数据
+            for (FileItem item : fileItems) {
+                //5、判断当前表单是否文件表单
+                if (!item.isFormField()) {
+                    //当前的字段是文件表单
+                    item.write(new File(this.getServletContext().getRealPath("upload"), question.getId()));
+                }
+            }
+            //跳转页面
+            resp.sendRedirect(req.getContextPath() + "/store/question?operation=list");
+        }
     }
 
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -113,7 +148,6 @@ public class QuestionServlet extends BaseServlet {
     }
 
 
-
     private void toAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("companyList", this.getCompanyList());
         req.setAttribute("catalogList", this.getCatalogList());
@@ -130,19 +164,27 @@ public class QuestionServlet extends BaseServlet {
             ServletFileUpload servletFileUpload = new ServletFileUpload(diskFileItemFactory);
             //4、从request中读取数据
             List<FileItem> fileItems = servletFileUpload.parseRequest(req);
+            //创建一个标记位
+            boolean flag = false;
+            for (FileItem item : fileItems) {
+                if (StringUtils.isNotBlank(item.getName())) {
+                    flag = true;
+                    break;
+                }
+            }
             //---处理form表单提交过来的普通数据
             //将数据获取到，封装成一个对象
             Question question = BeanUtil.fillBean(fileItems, Question.class);
+            //调用业务层接口save
+            String picture = questionService.save(question, flag);
             //---处理form表单提交过来的文件数据
             for (FileItem item : fileItems) {
                 //5、判断当前表单是否文件表单
                 if (!item.isFormField()) {
                     //当前的字段是文件表单
-                    item.write(new File(this.getServletContext().getRealPath("upload"),item.getName()));
+                    item.write(new File(this.getServletContext().getRealPath("upload"), picture));
                 }
             }
-            //调用业务层接口save
-            questionService.save(question);
             //跳转页面
             resp.sendRedirect(req.getContextPath() + "/store/question?operation=list");
         }

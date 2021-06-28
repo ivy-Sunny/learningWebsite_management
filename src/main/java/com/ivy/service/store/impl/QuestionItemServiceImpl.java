@@ -2,45 +2,38 @@ package com.ivy.service.store.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ivy.dao.store.QuestionDao;
-import com.ivy.domain.store.Question;
+import com.ivy.dao.store.QuestionItemDao;
+import com.ivy.domain.store.QuestionItem;
+import com.ivy.service.store.QuestionItemService;
 import com.ivy.service.store.QuestionService;
 import com.ivy.utils.MapperFactory;
 import com.ivy.utils.TransactionUtil;
 import org.apache.ibatis.session.SqlSession;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 /**
- * QuestionServiceImpl
+ * QuestionItemServiceImpl
  *
  * @Author: ivy
- * @CreateTime: 2021-06-27
+ * @CreateTime: 2021-06-28
  */
-public class QuestionServiceImpl implements QuestionService {
-    public String save(Question question,boolean flag) {
+public class QuestionItemServiceImpl implements QuestionItemService {
+    public void save(QuestionItem questionItem) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
+            QuestionItemDao questionItemDao = MapperFactory.getMapper(sqlSession, QuestionItemDao.class);
             //id使用UUID的生成策略
             String id = UUID.randomUUID().toString();
-            question.setCreateTime(new Date());
-            question.setId(id);
-            //设置新创建题目的审核状态为未审核
-            question.setCreateTime(new Date());
-            question.setReviewStatus("0");
-            //设置当前图片的存储名称为id值
-            if (flag) question.setPicture(id);
+            questionItem.setId(id);
             //3、调用Dao层操作
-            int result = questionDao.save(question);
+            int result = questionItemDao.save(questionItem);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
-            return id;
         } catch (Exception e) {
             TransactionUtil.rollback(sqlSession);
             throw new RuntimeException(e);
@@ -54,15 +47,15 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
-    public void delete(Question question) {
+    public void delete(QuestionItem questionItem) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
+            QuestionItemDao questionItemDao = MapperFactory.getMapper(sqlSession, QuestionItemDao.class);
             //3、调用Dao层操作
-            int result = questionDao.delete(question);
+            int result = questionItemDao.delete(questionItem);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -78,40 +71,15 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
-    public void update(Question question,boolean flag) {
+    public void update(QuestionItem questionItem) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
-            if (flag) question.setPicture(question.getId());
+            QuestionItemDao questionItemDao = MapperFactory.getMapper(sqlSession, QuestionItemDao.class);
             //3、调用Dao层操作
-            int result = questionDao.update(question);
-            //4、提交事务
-            TransactionUtil.commit(sqlSession);
-        } catch (Exception e) {
-            TransactionUtil.commit(sqlSession);
-            throw new RuntimeException(e);
-            //记录日志
-        } finally {
-            try {
-                TransactionUtil.close(sqlSession);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-    public void examine(Question question) {
-        SqlSession sqlSession = null;
-        try {
-            //1、获取SqlSession
-            sqlSession = MapperFactory.getSqlSession();
-            //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
-            question.setPicture(question.getId());
-            //3、调用Dao层操作
-            int result = questionDao.examine(question);
+            int result = questionItemDao.update(questionItem);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -127,15 +95,15 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
-    public Question findById(String id) {
+    public QuestionItem findById(String id) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
+            QuestionItemDao questionItemDao = MapperFactory.getMapper(sqlSession, QuestionItemDao.class);
             //3、调用Dao层操作
-            return questionDao.findById(id);
+            return questionItemDao.findById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
             //记录日志
@@ -148,37 +116,16 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
-    public List<Question> findAll() {
+    public PageInfo findAll(String questionId, int page, int size) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
-            //3、调用Dao层操作
-            return questionDao.findAll();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-            //记录日志
-        } finally {
-            try {
-                TransactionUtil.close(sqlSession);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public PageInfo findAll(int page, int size) {
-        SqlSession sqlSession = null;
-        try {
-            //1、获取SqlSession
-            sqlSession = MapperFactory.getSqlSession();
-            //2、获取Dao
-            QuestionDao questionDao = MapperFactory.getMapper(sqlSession, QuestionDao.class);
+            QuestionItemDao questionItemDao = MapperFactory.getMapper(sqlSession, QuestionItemDao.class);
             //3、调用Dao层操作
             PageHelper.startPage(page, size);
-            List<Question> all = questionDao.findAll();
+            List<QuestionItem> all = questionItemDao.findAll(questionId);
             PageInfo pageInfo = new PageInfo(all);
             return pageInfo;
         } catch (Exception e) {

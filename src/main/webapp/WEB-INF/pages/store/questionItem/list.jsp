@@ -30,7 +30,7 @@
         /*页面加载判断是编辑还是修改*/
         $(function () {
             if ('${operation}' == 'edit') {
-                $('#add').attr('hidden','hidden');
+                $('#add').attr('hidden', 'hidden');
                 $('#edit').removeAttr('hidden');
             }
         })
@@ -62,7 +62,8 @@
             <div id="add" class="panel-heading">新增选项</div>
             <div id="edit" class="panel-heading" hidden="hidden">编辑选项</div>
 
-            <form id="editForm" action="${ctx}/store/questionItem?operation=${operation}" method="post">
+            <form id="editForm" action="${ctx}/store/questionItem?operation=save"
+                  method="post"<%-- enctype="multipart/form-data"--%>>
                 <input type="hidden" name="questionId" value="${questionId}">
                 <input type="hidden" name="id" value="${questionItem.id}">
                 <div class="row data-type" style="margin: 0px">
@@ -78,22 +79,22 @@
                         <input type="file" class="form-control" placeholder="请选择" name="picture">
                     </div>
 
-                    <%--<div class="col-md-2 title">是否正确答案</div>
-                                <div class="col-md-4 data">
-                                    <select class="form-control" name="isRight">
-                                        <option value="">请选择</option>
-                                        <option value="1">正确答案</option>
-                                        <option value="0">错误选项</option>
-                                    </select>
-                                </div>--%>
                     <div class="col-md-2 title">是否正确答案</div>
                     <div class="col-md-4 data">
                         <select class="form-control" name="isRight">
                             <option value="">请选择</option>
-                            <option value="1" ${questionItem.isRight eq "1" ? "selected" : ""}>正确答案</option>
-                            <option value="0" ${questionItem.isRight eq "0" ? "selected" : ""}>错误选项</option>
+                            <option value="1">正确答案</option>
+                            <option value="0">错误选项</option>
                         </select>
                     </div>
+                    <%--                    <div class="col-md-2 title">是否正确答案</div>
+                                        <div class="col-md-4 data">
+                                            <select class="form-control" name="isRight">
+                                                <option value="">请选择</option>
+                                                <option value="1" ${questionItem.isRight eq "1" ? "selected" : ""}>正确答案</option>
+                                                <option value="0" ${questionItem.isRight eq "0" ? "selected" : ""}>错误选项</option>
+                                            </select>
+                                        </div>--%>
                 </div>
             </form>
         </div>
@@ -154,12 +155,8 @@
                         <c:forEach items="${page.list}" var="o" varStatus="status">
                             <tr class="odd" onmouseover="this.className='highlight'" onmouseout="this.className='odd'">
                                 <td>${o.content}</td>
-                                <td>${o.isRight eq "1" ? "正确答案" : ""}</td>
+                                <td>${o.isRight eq "1" ? "正确答案" : "错误答案"}</td>
                                 <td>
-                                    <button type="button" class="btn bg-olive btn-xs"
-                                            onclick='location.href="${ctx}/store/questionItem?operation=toEdit&questionId=${questionId}&id=${o.id}"'>
-                                        编辑
-                                    </button>
                                     <button type="button" class="btn bg-olive btn-xs" onclick="deleteById('${o.id}')">
                                         删除
                                     </button>

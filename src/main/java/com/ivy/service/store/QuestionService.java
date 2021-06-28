@@ -8,8 +8,10 @@ import java.util.List;
 public interface QuestionService {
     /**
      * 添加
+     * @return 保存的图片名称
+     * @param flag 是否有上传图片
      */
-    void save(Question question);
+    String save(Question question,boolean flag);
     /**
      * 删除
      */
@@ -18,8 +20,12 @@ public interface QuestionService {
     /**
      * 修改
      */
-    void update(Question question);
+    void update(Question question,boolean flag);
 
+    /**
+     * 审核
+     */
+    void examine(Question question);
     /**
      * 查询单个
      */
