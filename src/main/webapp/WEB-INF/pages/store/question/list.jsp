@@ -76,8 +76,11 @@
                                 <button type="button" class="btn btn-default" title="刷新"
                                         onclick="window.location.reload();"><i class="fa fa-refresh"></i> 刷新
                                 </button>
-                                <%--                            <button type="button" class="btn btn-default" title="测试文件上传" onclick='location.href="${ctx}/store/question?operation=toTestUpload"'><i class="fa fa-file-o"></i> 测试文件上传</button>--%>
-                                <%--
+                                <button type="button" class="btn btn-default" title="测试文件上传"
+                                        onclick='location.href="${ctx}/store/question?operation=toTestUpload"'><i
+                                        class="fa fa-file-o"></i> 测试文件上传
+                                </button>
+                            <%--
                                                             <button type="button" class="btn btn-default" title="上传题目" onclick='location.href="${ctx}/store/question?operation=toImport"'><i class="fa fa-adn"></i> 上传题目</button>
                                 --%>
                                 <button type="button" class="btn btn-default" title="导出题目"

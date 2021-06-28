@@ -1,7 +1,8 @@
-package com.ivy.web.controller.system;
+package com.ivy.web.controller.store;
 
 import com.github.pagehelper.PageInfo;
-import com.ivy.domain.system.Dept;
+import com.ivy.domain.store.Catalog;
+import com.ivy.domain.store.Course;
 import com.ivy.utils.BeanUtil;
 import com.ivy.web.controller.BaseServlet;
 import org.apache.commons.lang3.StringUtils;
@@ -14,13 +15,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * DeptServlet
+ * CatalogServlet
  *
  * @Author: ivy
  * @CreateTime: 2021-06-27
  */
-@WebServlet("/system/dept")
-public class DeptServlet extends BaseServlet {
+@WebServlet("/store/catalog")
+public class CatalogServlet extends BaseServlet {
     //获取数据
 
     @Override
@@ -40,35 +41,38 @@ public class DeptServlet extends BaseServlet {
             this.delete(req, resp);
         }
     }
-    private List<Dept> getDeptList(){
-        return deptService.findAll();
+
+    private List<Course> getCourses() {
+        return courseService.findAll();
     }
+
     private void toEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //查询要修改的数据
         String id = req.getParameter("id");
-        Dept dept = deptService.findById(id);
-        req.setAttribute("deptList",this.getDeptList());
+        Catalog catalog = catalogService.findById(id);
         //将数据加载到指定区域，供页面获取
-        req.setAttribute("dept", dept);
+        req.setAttribute("catalog", catalog);
+        req.setAttribute("courseList",this.getCourses());
         //跳转页面
-        req.getRequestDispatcher("/WEB-INF/pages/system/dept/update.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/store/catalog/update.jsp").forward(req, resp);
     }
 
     private void edit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //将数据获取到，封装成一个对象
-        Dept dept = BeanUtil.fillBean(req, Dept.class, "yyyy-MM-dd");
+        Catalog catalog = BeanUtil.fillBean(req, Catalog.class, "yyyy-MM-dd");
         //调用业务层接口save
-        deptService.update(dept);
+        catalogService.update(catalog);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/dept?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/store/catalog?operation=list");
     }
+
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //将数据获取到，封装成一个对象
-        Dept dept = BeanUtil.fillBean(req, Dept.class, "yyyy-MM-dd");
+        Catalog catalog = BeanUtil.fillBean(req, Catalog.class, "yyyy-MM-dd");
         //调用业务层接口save
-        deptService.delete(dept);
+        catalogService.delete(catalog);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/dept?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/store/catalog?operation=list");
     }
 
     @Override
@@ -86,25 +90,25 @@ public class DeptServlet extends BaseServlet {
             size = Integer.parseInt(req.getParameter("size"));
         }
 
-        PageInfo all = deptService.findAll(page, size);
+        PageInfo all = catalogService.findAll(page, size);
         //将数据保存到指定的位置
         req.setAttribute("page", all);
         //跳转页面
-        req.getRequestDispatcher("/WEB-INF/pages/system/dept/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/store/catalog/list.jsp").forward(req, resp);
     }
 
     private void toAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setAttribute("courseList",this.getCourses());
         //跳转页面
-        req.setAttribute("deptList",this.getDeptList());
-        req.getRequestDispatcher("/WEB-INF/pages/system/dept/add.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/store/catalog/add.jsp").forward(req, resp);
     }
 
     private void save(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //将数据获取到，封装成一个对象
-        Dept dept = BeanUtil.fillBean(req, Dept.class, "yyyy-MM-dd");
+        Catalog catalog = BeanUtil.fillBean(req, Catalog.class, "yyyy-MM-dd");
         //调用业务层接口save
-        deptService.save(dept);
+        catalogService.save(catalog);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/dept?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/store/catalog?operation=list");
     }
 }

@@ -26,7 +26,6 @@ public class CompanyServlet extends BaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String operation = req.getParameter("operation");
-        System.out.println(operation);
         if ("list".equals(operation)) {
             this.list(req, resp);
         } else if ("toAdd".equals(operation)) {

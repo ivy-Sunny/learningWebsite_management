@@ -2,6 +2,7 @@ package com.ivy.web.controller.system;
 
 import com.github.pagehelper.PageInfo;
 import com.ivy.domain.system.Dept;
+import com.ivy.domain.system.User;
 import com.ivy.utils.BeanUtil;
 import com.ivy.web.controller.BaseServlet;
 import org.apache.commons.lang3.StringUtils;
@@ -14,13 +15,13 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * DeptServlet
+ * UserServlet
  *
  * @Author: ivy
  * @CreateTime: 2021-06-27
  */
-@WebServlet("/system/dept")
-public class DeptServlet extends BaseServlet {
+@WebServlet("/system/user")
+public class UserServlet extends BaseServlet {
     //获取数据
 
     @Override
@@ -46,29 +47,29 @@ public class DeptServlet extends BaseServlet {
     private void toEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //查询要修改的数据
         String id = req.getParameter("id");
-        Dept dept = deptService.findById(id);
+        User user = userService.findById(id);
         req.setAttribute("deptList",this.getDeptList());
         //将数据加载到指定区域，供页面获取
-        req.setAttribute("dept", dept);
+        req.setAttribute("user", user);
         //跳转页面
-        req.getRequestDispatcher("/WEB-INF/pages/system/dept/update.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/system/user/update.jsp").forward(req, resp);
     }
 
     private void edit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //将数据获取到，封装成一个对象
-        Dept dept = BeanUtil.fillBean(req, Dept.class, "yyyy-MM-dd");
+        User user = BeanUtil.fillBean(req, User.class, "yyyy-MM-dd");
         //调用业务层接口save
-        deptService.update(dept);
+        userService.update(user);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/dept?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
     }
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //将数据获取到，封装成一个对象
-        Dept dept = BeanUtil.fillBean(req, Dept.class, "yyyy-MM-dd");
+        User user = BeanUtil.fillBean(req, User.class, "yyyy-MM-dd");
         //调用业务层接口save
-        deptService.delete(dept);
+        userService.delete(user);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/dept?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
     }
 
     @Override
@@ -86,25 +87,25 @@ public class DeptServlet extends BaseServlet {
             size = Integer.parseInt(req.getParameter("size"));
         }
 
-        PageInfo all = deptService.findAll(page, size);
+        PageInfo all = userService.findAll(page, size);
         //将数据保存到指定的位置
         req.setAttribute("page", all);
         //跳转页面
-        req.getRequestDispatcher("/WEB-INF/pages/system/dept/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/system/user/list.jsp").forward(req, resp);
     }
 
     private void toAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //跳转页面
         req.setAttribute("deptList",this.getDeptList());
-        req.getRequestDispatcher("/WEB-INF/pages/system/dept/add.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/system/user/add.jsp").forward(req, resp);
     }
 
     private void save(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //将数据获取到，封装成一个对象
-        Dept dept = BeanUtil.fillBean(req, Dept.class, "yyyy-MM-dd");
+        User user = BeanUtil.fillBean(req, User.class, "yyyy-MM-dd");
         //调用业务层接口save
-        deptService.save(dept);
+        userService.save(user);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/dept?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
     }
 }
