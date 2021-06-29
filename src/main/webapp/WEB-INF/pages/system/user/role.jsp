@@ -28,7 +28,6 @@
         </ol>
     </section>
     <!-- 内容头部 /-->
-
     <!-- 正文区域 -->
     <section class="content">
         <!-- .box-body -->
@@ -41,10 +40,10 @@
                     <input type="hidden" name="userId" value="${user.id}"/>
                     <div class="textbox" id="centerTextbox">
                             <div style="text-align:left">
-                                <c:forEach items="${roleList}" var="role" varStatus="vs">
+                                <c:forEach items="${roleList}" var="role" varStatus="vs" >
                                      <span style="padding:3px;margin-right:30px;width: 160px;display: inline-block">
                                          <!--遍历反选-->
-                                         <input type="checkbox" name="roleIds" value="${role.id}" ${role.remark}/>${role.name}
+                                         <input type="checkbox" name="roleIds" value="${role.id}" ${role.remark}/>&nbsp;&nbsp;&nbsp;${role.name}
                                      </span>
                                 </c:forEach>
                             </div>

@@ -2,8 +2,7 @@ package com.ivy.web.controller.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
-import com.ivy.domain.system.Dept;
-import com.ivy.domain.system.User;
+import com.ivy.domain.system.Role;
 import com.ivy.utils.BeanUtil;
 import com.ivy.web.controller.BaseServlet;
 import org.apache.commons.lang3.StringUtils;
@@ -17,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * UserServlet
+ * RoleServlet
  *
  * @Author: ivy
- * @CreateTime: 2021-06-27
+ * @CreateTime: 2021-06-28
  */
-@WebServlet("/system/user")
-public class UserServlet extends BaseServlet {
+@WebServlet("/system/role")
+public class RoleServlet extends BaseServlet {
     //获取数据
 
     @Override
@@ -41,44 +40,39 @@ public class UserServlet extends BaseServlet {
             this.edit(req, resp);
         } else if ("delete".equals(operation)) {
             this.delete(req, resp);
-        } else if ("userRoleList".equals(operation)) {
-            this.userRoleList(req, resp);
-        } else if ("updateRole".equals(operation)){
-            this.updateRole(req, resp);
+        } else if ("author".equals(operation)) {
+            this.toAuthor(req, resp);
+        } else if ("updateRoleModule".equals(operation)) {
+            this.updateRoleModule(req, resp);
         }
-    }
-
-    private List<Dept> getDeptList() {
-        return deptService.findAll();
     }
 
     private void toEdit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //查询要修改的数据
         String id = req.getParameter("id");
-        User user = userService.findById(id);
-        req.setAttribute("deptList", this.getDeptList());
+        Role role = roleService.findById(id);
         //将数据加载到指定区域，供页面获取
-        req.setAttribute("user", user);
+        req.setAttribute("role", role);
         //跳转页面
-        req.getRequestDispatcher("/WEB-INF/pages/system/user/update.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/system/role/update.jsp").forward(req, resp);
     }
 
     private void edit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //将数据获取到，封装成一个对象
-        User user = BeanUtil.fillBean(req, User.class, "yyyy-MM-dd");
+        Role role = BeanUtil.fillBean(req, Role.class, "yyyy-MM-dd");
         //调用业务层接口save
-        userService.update(user);
+        roleService.update(role);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/system/role?operation=list");
     }
 
     private void delete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         //将数据获取到，封装成一个对象
-        User user = BeanUtil.fillBean(req, User.class, "yyyy-MM-dd");
+        Role role = BeanUtil.fillBean(req, Role.class, "yyyy-MM-dd");
         //调用业务层接口save
-        userService.delete(user);
+        roleService.delete(role);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/system/role?operation=list");
     }
 
     @Override
@@ -96,41 +90,43 @@ public class UserServlet extends BaseServlet {
             size = Integer.parseInt(req.getParameter("size"));
         }
 
-        PageInfo all = userService.findAll(page, size);
+        PageInfo all = roleService.findAll(page, size);
         //将数据保存到指定的位置
         req.setAttribute("page", all);
         //跳转页面
-        req.getRequestDispatcher("/WEB-INF/pages/system/user/list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/system/role/list.jsp").forward(req, resp);
     }
 
     private void toAdd(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //跳转页面
-        req.setAttribute("deptList", this.getDeptList());
-        req.getRequestDispatcher("/WEB-INF/pages/system/user/add.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/system/role/add.jsp").forward(req, resp);
     }
 
     private void save(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //将数据获取到，封装成一个对象
-        User user = BeanUtil.fillBean(req, User.class, "yyyy-MM-dd");
+        Role role = BeanUtil.fillBean(req, Role.class, "yyyy-MM-dd");
         //调用业务层接口save
-        userService.save(user);
+        roleService.save(role);
         //跳转页面
-        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
+        resp.sendRedirect(req.getContextPath() + "/system/role?operation=list");
     }
 
-    private void userRoleList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String userId = req.getParameter("id");
-        User user = userService.findById(userId);
-        req.setAttribute("user", user);
-        //获取所有的角色列表
-        List<Map> allRole = roleService.findAllRoleByUserId(userId);
-        req.setAttribute("roleList", allRole);
-        req.getRequestDispatcher("/WEB-INF/pages/system/user/role.jsp").forward(req, resp);
+    private void toAuthor(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+        Role role = roleService.findById(id);
+        req.setAttribute("role", role);
+        //根据当前角色的id获取所有的模块数据，并加载关系
+        List<Map> roleModule = moduleService.findAuthorDataByRoleId(id);
+        ObjectMapper om = new ObjectMapper();
+        String roleModuleJson = om.writeValueAsString(roleModule);
+        req.setAttribute("roleModuleJson", roleModuleJson);
+        req.getRequestDispatcher("/WEB-INF/pages/system/role/author.jsp").forward(req, resp);
     }
-    private void updateRole(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String userId = req.getParameter("userId");
-        String[] roleIds = req.getParameterValues("roleIds");
-        userService.updateRole(userId,roleIds);
-        resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
+
+    private void updateRoleModule(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String roleId = req.getParameter("roleId");
+        String moduleIds = req.getParameter("moduleIds");
+        roleService.updateRoleModule(roleId, moduleIds);
+        resp.sendRedirect(req.getContextPath() + "/system/role?operation=list");
     }
 }

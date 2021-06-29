@@ -3,8 +3,12 @@ package com.ivy.web.controller;
 import com.ivy.service.store.*;
 import com.ivy.service.store.impl.*;
 import com.ivy.service.system.DeptService;
+import com.ivy.service.system.ModuleService;
+import com.ivy.service.system.RoleService;
 import com.ivy.service.system.UserService;
 import com.ivy.service.system.impl.DeptServiceImpl;
+import com.ivy.service.system.impl.ModuleServiceImpl;
+import com.ivy.service.system.impl.RoleServiceImpl;
 import com.ivy.service.system.impl.UserServiceImpl;
 
 import javax.servlet.ServletException;
@@ -24,6 +28,9 @@ public class BaseServlet extends HttpServlet {
     protected CatalogService catalogService;
     protected QuestionService questionService;
     protected QuestionItemService questionItemService;
+    protected RoleService roleService;
+    protected ModuleService moduleService;
+
     @Override
     public void init() throws ServletException {
         companyService = new CompanyServiceImpl();
@@ -33,5 +40,7 @@ public class BaseServlet extends HttpServlet {
         catalogService = new CatalogServiceImpl();
         questionService = new QuestionServiceImpl();
         questionItemService = new QuestionItemServiceImpl();
+        roleService = new RoleServiceImpl();
+        moduleService = new ModuleServiceImpl();
     }
 }

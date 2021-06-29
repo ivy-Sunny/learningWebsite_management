@@ -1,6 +1,7 @@
 package com.ivy.dao.system;
 
 import com.ivy.domain.system.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,4 +15,8 @@ public interface UserDao {
     User findById(String id);
 
     List<User> findAll();
+
+    void updateRole(@Param("userId") String userId, @Param("roleId") String roleId);
+
+    void deleteRole(String userId);
 }

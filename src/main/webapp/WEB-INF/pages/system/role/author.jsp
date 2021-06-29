@@ -24,7 +24,7 @@
         var zTreeObj;
         var setting = {check: {enable: true},data: {simpleData: {enable: true}}};
 
-       /* var zNodes = [
+/*        var zNodes = [
             {id:1,pId:0,name:'平台系统管理',checked:false},
             {id:101,pId:1,name:'企业管理',checked:false},
             {id:102,pId:1,name:'部门管理',checked:false},
@@ -42,7 +42,7 @@
             {id:302,pId:3,name:'会员答题管理',checked:false}
         ]*/
         var zNodes =${roleModuleJson}
-
+        console.log(${roleModuleJson})
         $(document).ready(function(){
             /*
             $.get("${ctx}/system/role?operation=getModuleByRoleId&id=${role.id}",function(data) {
@@ -65,6 +65,7 @@
             for(var i=0;i<nodes.length;i++) {
                 moduleArrays.push(nodes[i].id);
             }
+            console.log(moduleArrays.join(','))
             //3.将数组中的数据使用,连接后，赋值给表单，传入后台
             $("#moduleIds").val(moduleArrays.join(','));
             $("#icform").submit();

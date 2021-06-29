@@ -2,38 +2,37 @@ package com.ivy.service.system.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ivy.dao.system.UserDao;
-import com.ivy.domain.system.User;
-import com.ivy.service.system.UserService;
+import com.ivy.dao.system.RoleDao;
+import com.ivy.domain.system.Role;
+import com.ivy.service.system.RoleService;
 import com.ivy.utils.MD5Util;
 import com.ivy.utils.MapperFactory;
 import com.ivy.utils.TransactionUtil;
 import org.apache.ibatis.session.SqlSession;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
- * UserServiceImpl
+ * RoleServiceImpl
  *
  * @Author: ivy
- * @CreateTime: 2021-06-27
+ * @CreateTime: 2021-06-28
  */
-public class UserServiceImpl implements UserService {
-    public void save(User user) {
+public class RoleServiceImpl implements RoleService {
+    public void save(Role role) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //id使用UUID的生成策略
             String id = UUID.randomUUID().toString();
-            user.setId(id);
-            //密码必须经过MD5加密处理
-            user.setPassword(MD5Util.md5(user.getPassword()));
+            role.setId(id);
             //3、调用Dao层操作
-            int result = userDao.save(user);
+            int result = roleDao.save(role);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -49,15 +48,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void delete(User user) {
+    public void delete(Role role) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //3、调用Dao层操作
-            int result = userDao.delete(user);
+            int result = roleDao.delete(role);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -73,15 +72,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void update(User user) {
+    public void update(Role role) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //3、调用Dao层操作
-            int result = userDao.update(user);
+            int result = roleDao.update(role);
             //4、提交事务
             TransactionUtil.commit(sqlSession);
         } catch (Exception e) {
@@ -97,15 +96,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public User findById(String id) {
+    public Role findById(String id) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //3、调用Dao层操作
-            return userDao.findById(id);
+            return roleDao.findById(id);
         } catch (Exception e) {
             throw new RuntimeException(e);
             //记录日志
@@ -118,15 +117,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public List<User> findAll() {
+    public List<Role> findAll() {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //3、调用Dao层操作
-            return userDao.findAll();
+            return roleDao.findAll();
         } catch (Exception e) {
             throw new RuntimeException(e);
             //记录日志
@@ -145,10 +144,10 @@ public class UserServiceImpl implements UserService {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //3、调用Dao层操作
             PageHelper.startPage(page, size);
-            List<User> all = userDao.findAll();
+            List<Role> all = roleDao.findAll();
             PageInfo pageInfo = new PageInfo(all);
             return pageInfo;
         } catch (Exception e) {
@@ -163,19 +162,21 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void updateRole(String userId, String[] roleIds) {
+    public void updateRoleModule(String roleId, String moduleIds) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
             sqlSession = MapperFactory.getSqlSession();
             //2、获取Dao
-            UserDao userDao = MapperFactory.getMapper(sqlSession, UserDao.class);
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
             //3、调用Dao层操作
-            //先解除所有的user与role的关系
-            userDao.deleteRole(userId);
-            //再添加新的关系
-            for (String roleId : roleIds) {
-                userDao.updateRole(userId, roleId);
+            //修改role_module关系表
+            //3.1现有的关系全部取消掉
+            roleDao.deleteRoleModule(roleId);
+            //3.2建立新的关系（多个）
+            String[] moduleIdList = moduleIds.split(",");
+            for (String moduleId : moduleIdList) {
+                roleDao.saveRoleModule(roleId, moduleId);
             }
             //4、提交事务
             TransactionUtil.commit(sqlSession);
@@ -191,4 +192,27 @@ public class UserServiceImpl implements UserService {
             }
         }
     }
+
+    public List<Map> findAllRoleByUserId(String userId){
+        SqlSession sqlSession = null;
+        try {
+            //1、获取SqlSession
+            sqlSession = MapperFactory.getSqlSession();
+            //2、获取Dao
+            RoleDao roleDao = MapperFactory.getMapper(sqlSession, RoleDao.class);
+            //3、调用Dao层操作
+            List<Map> roles = roleDao.findAllRoleByUserId(userId);
+            return roles;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+            //记录日志
+        } finally {
+            try {
+                TransactionUtil.close(sqlSession);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }
