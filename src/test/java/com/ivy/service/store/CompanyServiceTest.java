@@ -3,6 +3,7 @@ package com.ivy.service.store;
 import com.github.pagehelper.PageInfo;
 import com.ivy.domain.store.Company;
 import com.ivy.service.store.impl.CompanyServiceImpl;
+import com.ivy.utils.MD5Util;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -29,8 +30,9 @@ public class CompanyServiceTest {
     }
     @Test
     public void findAll(){
-        PageInfo all = companyService.findAll(1, 10);
-        System.out.println(all);
+        String pwd= "root";
+        String s = MD5Util.md5(pwd);
+        System.out.println(s);
     }
 
     @AfterClass

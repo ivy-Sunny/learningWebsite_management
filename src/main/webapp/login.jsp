@@ -29,14 +29,14 @@
     <div class="login-box-body">
         <p class="login-box-msg">登录系统</p>
         <%--WEB-INF目录下的文件默认只能通过servlet访问--%>
-        <form action="${pageContext.request.contextPath}/pages/home/main.jsp" method="post">
+        <form action="${pageContext.request.contextPath}/system/user?operation=login" method="post">
 <%--        <form action="${pageContext.request.contextPath}/pages/home/main.jsp" method="post">--%>
             <div class="form-group has-feedback">
                 <input type="email" name="email" class="form-control" placeholder="Email" value="test@itcast.cn">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
             </div>
             <div class="form-group has-feedback">
-                <input type="password" name="password" class="form-control" placeholder="密码" value="test">
+                <input type="password" name="password" class="form-control" placeholder="密码" value="root">
                 <span class="glyphicon glyphicon-lock form-control-feedback"></span>
             </div>
             <div class="row">

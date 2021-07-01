@@ -80,4 +80,18 @@ public class Module {
     public void setModule(Module module) {
         this.module = module;
     }
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "id='" + id + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", name='" + name + '\'' +
+                ", ctype=" + ctype +
+                ", state=" + state +
+                ", curl='" + curl + '\'' +
+                ", remark='" + remark + '\'' +
+                ", module=" + module +
+                '}';
+    }
 }

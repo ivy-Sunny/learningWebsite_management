@@ -24,7 +24,7 @@
             <small>用户管理</small>
         </h1>
         <ol class="breadcrumb">
-            <li><a href="all-admin-index.html"><i class="fa fa-dashboard"></i> 首页</a></li>
+            <li><a href="${pageContext.request.contextPath}/system/user?operation=home"><i class="fa fa-dashboard"></i> 首页</a></li>
         </ol>
     </section>
     <!-- 内容头部 /-->

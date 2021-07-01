@@ -50,4 +50,6 @@ public interface ModuleService {
      * @return  该角色的权限模块
      */
     public List<Map> findAuthorDataByRoleId(String roleId);
+
+    List<Module> findModuleByUserId(String userId);
 }

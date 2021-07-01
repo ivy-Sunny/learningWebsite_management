@@ -1,7 +1,9 @@
 package com.ivy.service.system;
 
 import com.github.pagehelper.PageInfo;
+import com.ivy.domain.system.Module;
 import com.ivy.domain.system.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -44,4 +46,14 @@ public interface UserService {
     PageInfo findAll(int page, int size);
 
     void updateRole(String userId,String[] roleIds);
+
+    /**
+     * 登陆
+     * @param email
+     * @param password
+     * @return
+     */
+    User login (String email, String password);
+
+    List<Module> findModuleById(String userId);
 }

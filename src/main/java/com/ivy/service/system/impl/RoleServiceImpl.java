@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.ivy.dao.system.RoleDao;
 import com.ivy.domain.system.Role;
 import com.ivy.service.system.RoleService;
-import com.ivy.utils.MD5Util;
 import com.ivy.utils.MapperFactory;
 import com.ivy.utils.TransactionUtil;
 import org.apache.ibatis.session.SqlSession;

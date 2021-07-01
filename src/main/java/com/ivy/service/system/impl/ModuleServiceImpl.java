@@ -161,7 +161,8 @@ public class ModuleServiceImpl implements ModuleService {
             }
         }
     }
-    public List<Map> findAuthorDataByRoleId(String roleId){
+
+    public List<Map> findAuthorDataByRoleId(String roleId) {
         SqlSession sqlSession = null;
         try {
             //1、获取SqlSession
@@ -171,6 +172,26 @@ public class ModuleServiceImpl implements ModuleService {
             List<Map> moduleMap = moduleDao.findAuthorDataByRoleId(roleId);
 
             return moduleMap;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+            //记录日志
+        } finally {
+            try {
+                TransactionUtil.close(sqlSession);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public List<Module> findModuleByUserId(String userId) {
+        SqlSession sqlSession = null;
+        try {
+            //1、获取SqlSession
+            sqlSession = MapperFactory.getSqlSession();
+            //2、获取Dao
+            ModuleDao moduleDao = MapperFactory.getMapper(sqlSession, ModuleDao.class);
+            return moduleDao.findModuleByUserId(userId);
         } catch (Exception e) {
             throw new RuntimeException(e);
             //记录日志

@@ -3,6 +3,8 @@ package com.ivy.web.controller.system;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageInfo;
 import com.ivy.domain.system.Dept;
+import com.ivy.domain.system.Module;
+import com.ivy.domain.system.Role;
 import com.ivy.domain.system.User;
 import com.ivy.utils.BeanUtil;
 import com.ivy.web.controller.BaseServlet;
@@ -43,11 +45,19 @@ public class UserServlet extends BaseServlet {
             this.delete(req, resp);
         } else if ("userRoleList".equals(operation)) {
             this.userRoleList(req, resp);
-        } else if ("updateRole".equals(operation)){
+        } else if ("updateRole".equals(operation)) {
             this.updateRole(req, resp);
+        } else if ("login".equals(operation)) {
+            this.login(req, resp);
+        } else if ("home".equals(operation)){
+            this.home(req, resp);
+        } else if("logout".equals(operation)){
+            this.logout(req, resp);
         }
     }
-
+    private void home(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getRequestDispatcher("/WEB-INF/pages/home/home.jsp").forward(req, resp);
+    }
     private List<Dept> getDeptList() {
         return deptService.findAll();
     }
@@ -127,10 +137,33 @@ public class UserServlet extends BaseServlet {
         req.setAttribute("roleList", allRole);
         req.getRequestDispatcher("/WEB-INF/pages/system/user/role.jsp").forward(req, resp);
     }
+
     private void updateRole(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String userId = req.getParameter("userId");
         String[] roleIds = req.getParameterValues("roleIds");
-        userService.updateRole(userId,roleIds);
+        userService.updateRole(userId, roleIds);
         resp.sendRedirect(req.getContextPath() + "/system/user?operation=list");
+    }
+
+    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+        String email = req.getParameter("email");
+        String pwd = req.getParameter("password");
+        User user = userService.login(email,pwd);
+        if (user != null){
+            req.getSession().setAttribute("userInfo",user);
+            //如果登录成功，加载该用户角色下面对应的模块
+            //根据用户查询底下的角色，再根据角色查询模块
+            List<Module> moduleList = userService.findModuleById(user.getId());
+            for (Module module : moduleList) {
+                System.out.println(module);
+            }
+            req.getRequestDispatcher("/WEB-INF/pages/home/main.jsp").forward(req, resp);
+        }else {
+            resp.sendRedirect(req.getContextPath() + "/login.jsp");
+        }
+    }
+    private void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        req.getSession().removeAttribute("userInfo");
+        resp.sendRedirect(req.getContextPath() + "/login.jsp");
     }
 }
