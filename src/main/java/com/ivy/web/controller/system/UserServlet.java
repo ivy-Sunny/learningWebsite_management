@@ -49,15 +49,17 @@ public class UserServlet extends BaseServlet {
             this.updateRole(req, resp);
         } else if ("login".equals(operation)) {
             this.login(req, resp);
-        } else if ("home".equals(operation)){
+        } else if ("home".equals(operation)) {
             this.home(req, resp);
-        } else if("logout".equals(operation)){
+        } else if ("logout".equals(operation)) {
             this.logout(req, resp);
         }
     }
+
     private void home(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/WEB-INF/pages/home/home.jsp").forward(req, resp);
     }
+
     private List<Dept> getDeptList() {
         return deptService.findAll();
     }
@@ -148,20 +150,19 @@ public class UserServlet extends BaseServlet {
     private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String email = req.getParameter("email");
         String pwd = req.getParameter("password");
-        User user = userService.login(email,pwd);
-        if (user != null){
-            req.getSession().setAttribute("userInfo",user);
+        User user = userService.login(email, pwd);
+        if (user != null) {
+            req.getSession().setAttribute("userInfo", user);
             //如果登录成功，加载该用户角色下面对应的模块
             //根据用户查询底下的角色，再根据角色查询模块
             List<Module> moduleList = userService.findModuleById(user.getId());
-            for (Module module : moduleList) {
-                System.out.println(module);
-            }
+            req.setAttribute("moduleList", moduleList);
             req.getRequestDispatcher("/WEB-INF/pages/home/main.jsp").forward(req, resp);
-        }else {
+        } else {
             resp.sendRedirect(req.getContextPath() + "/login.jsp");
         }
     }
+
     private void logout(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.getSession().removeAttribute("userInfo");
         resp.sendRedirect(req.getContextPath() + "/login.jsp");

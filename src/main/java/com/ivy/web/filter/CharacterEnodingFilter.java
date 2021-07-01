@@ -1,6 +1,8 @@
 package com.ivy.web.filter;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -11,14 +13,16 @@ import java.io.IOException;
  */
 public class CharacterEnodingFilter implements Filter {
     private String encoding;
+    private FilterConfig filterConfig;
+
     public void init(FilterConfig filterConfig) throws ServletException {
+        this.filterConfig = filterConfig;
         this.encoding = filterConfig.getInitParameter("encoding");
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         servletRequest.setCharacterEncoding(encoding);
-        filterChain.doFilter(servletRequest,servletResponse);
-
+        filterChain.doFilter((HttpServletRequest)servletRequest, (HttpServletResponse)servletResponse);
     }
 
     public void destroy() {
